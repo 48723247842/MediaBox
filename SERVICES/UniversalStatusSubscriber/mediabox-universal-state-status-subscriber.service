@@ -1,0 +1,14 @@
+[Unit]
+Description=Redis Subscriber LOG.ALL
+After=network.target
+
+[Timer]
+OnBootSec=10
+OnUnitActiveSec=10
+AccuracySec=1ms
+
+[Service]
+ExecStart=/bin/bash -l -c 'su morphs -c "/usr/local/bin/mediaboxUniversalStatusSubscriber"'
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,17 @@
+[Unit]
+Description=Keeps Spotify Running
+After=network.target
+
+[Service]
+Restart=always
+RestartSec=3
+User=morphs
+Environment="DISPLAY=:0"
+Environment="DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
+ExecStart=/usr/bin/spotify
+ExecReload=/usr/bin/pkill -9 spotify
+ExecStop=/usr/bin/pkill -9 spotify
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

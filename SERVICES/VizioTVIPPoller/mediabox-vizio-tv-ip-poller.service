@@ -1,0 +1,12 @@
+[Unit]
+Description=Continuously Polls For Latest Vizio TV IP and Stores In Redis
+After=network.target
+
+[Service]
+Restart=always
+RestartSec=3
+ExecStart=/bin/bash -l -c 'su morphs -c "/usr/local/bin/vizioTVIPPoller"'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

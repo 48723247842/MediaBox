@@ -1,0 +1,14 @@
+[Unit]
+Description=Keeps Spotify Running
+After=network.target
+
+[Service]
+Restart=always
+RestartSec=3
+ExecStart=/bin/bash -l -c 'su morphs -c "/usr/local/bin/startSpotify"'
+ExecReload=/usr/bin/pkill -9 spotify
+ExecStop=/usr/bin/pkill -9 spotify
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
