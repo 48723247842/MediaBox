@@ -1,10 +1,10 @@
 package utils
 
 import (
-	pretty "github.com/gobs/pretty"
+	//pretty "github.com/gobs/pretty"
 	"fmt"
 	"strings"
-	"reflect"
+	//"reflect"
 	"encoding/json"
 	"encoding/base64"
 	//"io"
@@ -125,7 +125,13 @@ func Base64Decode( source string ) ( decoded string ) {
 }
 
 
-func PrepareTV() ( result string ) {
+func PrepareTV( volume_level_input ...int ) ( result string ) {
+	var volume_level int
+	if len( volume_level_input ) < 1 {
+		volume_level = 12
+	} else {
+		volume_level = volume_level_input[0]
+	}
 	result = "failed"
 	redis := redis.Manager{}
 	redis.Connect( "localhost:6379" , 3 , "" )
@@ -135,17 +141,17 @@ func PrepareTV() ( result string ) {
 	if auth_token == "" { return }
 
 	current_power_state := viziocontroller.GetPowerState( ip_address , auth_token )
-	fmt.Println( current_power_state )
+	//fmt.Println( current_power_state )
 	if current_power_state == 0 {
 		viziocontroller.PowerOn( ip_address , auth_token )
 	}
 	current_volume := viziocontroller.GetVolume( ip_address , auth_token )
-	fmt.Println( current_volume )
-	if current_volume < 12 {
-		viziocontroller.SetSettingsOption( ip_address , auth_token , "audio" , "volume" , 12 )
+	//fmt.Println( current_volume )
+	if current_volume != volume_level {
+		viziocontroller.SetSettingsOption( ip_address , auth_token , "audio" , "volume" , volume_level )
 	}
 	current_input := viziocontroller.GetCurrentInput( ip_address , auth_token )
-	fmt.Println( current_input.Name )
+	//fmt.Println( current_input.Name )
 	if current_input.Name != "hdmi1" {
 		viziocontroller.SetInput( ip_address , auth_token , "HDMI-1" )
 	}
@@ -156,6 +162,7 @@ func PrepareTV() ( result string ) {
 		viziocontroller.SetSettingsOption( ip_address , auth_token , "audio" , "mute" , "Off" )
 	}
 	result = "success"
+	return
 }
 
 func TeardownCurrentState() ( result string ) {
