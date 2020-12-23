@@ -22,6 +22,7 @@ func main() {
 
 	// Named Top Level Macro States
 	app.Get( "/spotify" , buttons_route_handler.Button1 )
+	//app.Get( "/relaxing" , buttons_route_handler.Button1 )
 
 	// Button Routes
 	buttons := app.Group( "/button" )
