@@ -1,0 +1,16 @@
+[Unit]
+Description=Keeps VLC Running
+After=network.target
+
+[Service]
+Restart=always
+RestartSec=3
+User=morphs
+Environment="DISPLAY=:0"
+ExecStart=/usr/bin/vlc --no-spu --intf telnet --telnet-password admin
+ExecReload=/usr/bin/pkill -9 vlc
+ExecStop=/usr/bin/pkill -9 vlc
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

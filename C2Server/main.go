@@ -3,6 +3,7 @@ package main
 import (
 	fiber "github.com/gofiber/fiber/v2"
 	state_spotify_route_handler "c2server/routes/states/spotify"
+	state_local_tvshow_route_handler "c2server/routes/states/local/tvshow"
 )
 
 func main() {
@@ -23,6 +24,19 @@ func main() {
 	states_spotify.Get( "/next" , state_spotify_route_handler.Next )
 	states_spotify.Get( "/previous" , state_spotify_route_handler.Previous )
 	states_spotify.Get( "/status" , state_spotify_route_handler.Status )
+
+	states_local := states.Group( "/local" )
+	states_local_tvshow := states_local.Group( "/tvshow" )
+	states_local_tvshow.Get( "/start" , state_local_tvshow_route_handler.Start )
+	states_local_tvshow.Get( "/teardown" , state_local_tvshow_route_handler.Teardown )
+	states_local_tvshow.Get( "/play" , state_local_tvshow_route_handler.Play )
+	states_local_tvshow.Get( "/stop" , state_local_tvshow_route_handler.Stop )
+	states_local_tvshow.Get( "/pause" , state_local_tvshow_route_handler.Pause )
+	states_local_tvshow.Get( "/resume" , state_local_tvshow_route_handler.Resume )
+	states_local_tvshow.Get( "/next" , state_local_tvshow_route_handler.Next )
+	states_local_tvshow.Get( "/previous" , state_local_tvshow_route_handler.Previous )
+	states_local_tvshow.Get( "/status" , state_local_tvshow_route_handler.Status )
+
 
 	 app.Listen( ":9363" )
 

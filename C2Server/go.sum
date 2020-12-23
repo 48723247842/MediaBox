@@ -2,6 +2,8 @@ github.com/0187773933/RedisManagerUtils v0.0.0-20201221200850-aecacb38bdeb h1:nf
 github.com/0187773933/RedisManagerUtils v0.0.0-20201221200850-aecacb38bdeb/go.mod h1:yufQIVvXvJFZdnMRmwOh7amcJBuwvJdqkToYP4LJ1Cg=
 github.com/0187773933/SpotifyDBUSController v0.0.0-20201218010215-9e6089a042a1 h1:WkH6zAazt+bQdkI5eHIKAN1XowMymhnYzsyZxn6NnSU=
 github.com/0187773933/SpotifyDBUSController v0.0.0-20201218010215-9e6089a042a1/go.mod h1:VceRGzlwpp2JFPZ0n5SsqbPtWuAZcI2/ZEdbGk3JPCE=
+github.com/0187773933/VLCTelnetWrapper v0.0.0-20201223010120-7a2bb170bd93 h1:uc3tVIAXiDYrDcAuDlt1MHqVEKglm9CWhvuTlf36+Ug=
+github.com/0187773933/VLCTelnetWrapper v0.0.0-20201223010120-7a2bb170bd93/go.mod h1:ZEmx0WB1EkO2ivp3m2MQhGhBEmuYTd35T2BY0cFFFdI=
 github.com/0187773933/VLCWrapper v0.0.0-20201221220025-0eb764d89766 h1:0bailFo1VIlXWTyL1Sx5LfnPVWL2OjuIrllmo3KqUUY=
 github.com/0187773933/VLCWrapper v0.0.0-20201221220025-0eb764d89766/go.mod h1:ZHpNgdKdz5dP+mM6ivz0XT5M1vUCgblm6kNGLtE1kgI=
 github.com/andybalholm/brotli v1.0.0 h1:7UCwP93aiSfvWpapti8g88vVVGp2qqtGyePsSuDafo4=
@@ -52,6 +54,8 @@ github.com/klauspost/compress v1.10.7 h1:7rix8v8GpI3ZBb0nSozFRgbtXKv+hOe+qfEpZqy
 github.com/klauspost/compress v1.10.7/go.mod h1:aoV0uJVorq1K+umq18yTdKaF57EivdYsUV+/s2qKfXs=
 github.com/leodido/go-urn v1.2.0 h1:hpXL4XnriNwQ/ABnpepYM/1vCLWNDfUNts8dX3xTG6Y=
 github.com/leodido/go-urn v1.2.0/go.mod h1:+8+nEpDfqqsY+g338gtMEUOtuK+4dEMhiQEgxpxOKII=
+github.com/manucorporat/try v0.0.0-20170609134256-2a0c6b941d52 h1:oDTPtoe4cjcJZyFBdQeM9fIYr3r9OChbE52ZlPBm0R0=
+github.com/manucorporat/try v0.0.0-20170609134256-2a0c6b941d52/go.mod h1:PYmsnmY2H7ohIZ3KsT7XGM7C5cmr+yKJ9MBBQd5p6AU=
 github.com/mattn/go-isatty v0.0.12 h1:wuysRhFDzyxgEmMf5xjvJ2M9dZoWAXNNr5LSBS7uHXY=
 github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Kysco4FUpU=
 github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
@@ -85,6 +89,8 @@ github.com/valyala/fasthttp v1.18.0 h1:IV0DdMlatq9QO1Cr6wGJPVW1sV1Q8HvZXAIcjoryl
 github.com/valyala/fasthttp v1.18.0/go.mod h1:jjraHZVbKOXftJfsOYoAjaeygpj5hr8ermTRJNroD7A=
 github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a h1:0R4NLDRDZX6JcmhJgXi5E4b8Wg84ihbmUKp/GvSPEzc=
 github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a/go.mod h1:v3UYOV9WzVtRmSR+PDvWpU/qWl4Wa5LApYYX4ZtKbio=
+github.com/ziutek/telnet v0.0.0-20180329124119-c3b780dc415b h1:VfPXB/wCGGt590QhD1bOpv2J/AmC/RJNTg/Q59HKSB0=
+github.com/ziutek/telnet v0.0.0-20180329124119-c3b780dc415b/go.mod h1:IZpXDfkJ6tWD3PhBK5YzgQT+xJWh7OsdwiG8hA2MkO4=
 go.opentelemetry.io/otel v0.15.0 h1:CZFy2lPhxd4HlhZnYK8gRyDotksO3Ip9rBweY1vVYJw=
 go.opentelemetry.io/otel v0.15.0/go.mod h1:e4GKElweB8W2gWUqbghw0B8t5MCTccc9212eNHnOHwA=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=

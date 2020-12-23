@@ -13,9 +13,34 @@ import (
 
 var logger *logrus.Entry = utils.BuildLogger( "State-Spotify" )
 
-func Stop() ( result string ) {
-	logger.Info( "State === Spotify === Stop()" )
+func Status() ( result types.SpotifyStatus ) {
+	logger.Info( "State === Spotify === Status()" )
+	spotify := spotify_dbus.Controller{}
+	spotify.Connect()
+	spotify.UpdateStatus()
+	logger.WithFields( logrus.Fields{
+		"command": "spotify_status" ,
+		"spotify_status": spotify.Status ,
+	}).Info( "State === Spotify === Status() === Spotify Status" )
+	result = spotify.Status
+	return
+}
+
+func PlaybackStatus() ( result string ) {
+	logger.Info( "State === Spotify === PlaybackStatus()" )
 	result = "failed"
+	spotify := spotify_dbus.Controller{}
+	spotify.Connect()
+	result = spotify.PlaybackStatus()
+	logger.WithFields( logrus.Fields{
+		"command": "spotify_playback_status" ,
+		"spotify_playback_status": result ,
+	}).Info( "State === Spotify === PlaybackStatus () === Spotify Status" )
+	return
+}
+
+func Stop() ( result types.SpotifyStatus ) {
+	logger.Info( "State === Spotify === Stop()" )
 	spotify := spotify_dbus.Controller{}
 	spotify.Connect()
 	spotify.Stop()
@@ -24,13 +49,12 @@ func Stop() ( result string ) {
 		"command": "spotify_status" ,
 		"spotify_status": spotify.Status ,
 	}).Info( "State === Spotify === Stop() === Spotify Status")
-	result = spotify.PlaybackStatus()
+	result = spotify.Status
 	return
 }
 
-func Play() ( result string ) {
+func Play() ( result types.SpotifyStatus ) {
 	logger.Info( "State === Spotify === Play()" )
-	result = "failed"
 	spotify := spotify_dbus.Controller{}
 	spotify.Connect()
 	spotify.Play()
@@ -38,27 +62,25 @@ func Play() ( result string ) {
 		"command": "spotify_status" ,
 		"spotify_status": spotify.Status ,
 	}).Info( "State == Spotify === Play() === Spotify Status")
-	result = spotify.PlaybackStatus()
+	result = spotify.Status
 	return
 }
 
-func Pause() ( result string ) {
+func Pause() ( result types.SpotifyStatus ) {
 	logger.Info( "State === Spotify === Pause()" )
-	result = "failed"
 	spotify := spotify_dbus.Controller{}
 	spotify.Connect()
-	spotify.Play()
+	spotify.Pause()
 	logger.WithFields( logrus.Fields{
 		"command": "spotify_status" ,
 		"spotify_status": spotify.Status ,
 	}).Info( "State === Spotify === StartNextInCircularListOfMiscGenrePlaylists() === Spotify Status")
-	result = spotify.PlaybackStatus()
+	result = spotify.Status
 	return
 }
 
-func Previous() ( result string ) {
+func Previous() ( result types.SpotifyStatus ) {
 	logger.Info( "State === Spotify === Previous()" )
-	result = "failed"
 	spotify := spotify_dbus.Controller{}
 	spotify.Connect()
 	spotify.Previous()
@@ -66,13 +88,12 @@ func Previous() ( result string ) {
 		"command": "spotify_status" ,
 		"spotify_status": spotify.Status ,
 	}).Info( "State === Spotify === Previous() === Spotify Status")
-	result = spotify.PlaybackStatus()
+	result = spotify.Status
 	return
 }
 
-func Next() ( result string ) {
+func Next() ( result types.SpotifyStatus ) {
 	logger.Info( "State === Spotify === Next()" )
-	result = "failed"
 	spotify := spotify_dbus.Controller{}
 	spotify.Connect()
 	spotify.Next()
@@ -80,13 +101,12 @@ func Next() ( result string ) {
 		"command": "spotify_status" ,
 		"spotify_status": spotify.Status ,
 	}).Info( "State === Spotify === Next() === Spotify Status" )
-	result = spotify.PlaybackStatus()
+	result = spotify.Status
 	return
 }
 
-func StartNextInCircularListOfMiscGenrePlaylists() ( result string ) {
+func StartNextInCircularListOfMiscGenrePlaylists() ( result types.SpotifyStatus ) {
 	logger.Info( "State === Spotify === StartNextInCircularListOfMiscGenrePlaylists()" )
-	result = "failed"
 	redis := redis.Manager{}
 	redis.Connect( "localhost:6379" , 3 , "" )
 	next_playlist_uri := redis.CircleNext( "CONFIG.SPOTIFY.PLAYLISTS.GENERES.MISC" )
@@ -101,6 +121,7 @@ func StartNextInCircularListOfMiscGenrePlaylists() ( result string ) {
 		"command": "" ,
 		"spotify_status": spotify.Status ,
 	}).Info( "State === Spotify === StartNextInCircularListOfMiscGenrePlaylists() === Spotify Status" )
+	result = spotify.Status
 	return
 }
 
@@ -134,7 +155,7 @@ func swap_current_and_previous_state_info( state_name string ) {
 	redis.Set( "STATE.CURRENT" , state_meta_data )
 }
 
-func Start() ( result string ) {
+func Start() ( result types.SpotifyStatus ) {
 	logger.Info( "State === Spotify === Start()" )
 	swap_current_and_previous_state_info( "SpotifyStartNextInCircularListOfMiscGenrePlaylists" )
 	result = StartNextInCircularListOfMiscGenrePlaylists()

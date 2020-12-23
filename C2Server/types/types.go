@@ -52,3 +52,43 @@ type StateMetaData struct {
 	RestartOnFail bool `json:restart_on_fail`
 	NowPlaying NowPlayingMeta `json:now_playing`
 }
+
+type VLCStatus struct {
+	Input string `json:input`
+	AudioVolume int `json:audio_volume`
+	State string `json:state`
+}
+
+type VLCSInfo string
+
+type VLCCommonStatus struct {
+	Input string `json:input`
+	AudioVolume int `json:audio_volume`
+	State string `json:state`
+	Info string `json:string`
+	Seconds int `json:seconds`
+	Length int `json:length`
+}
+
+type SpotifyStatus struct {
+	Shuffle string
+	MaximumRate string
+	MinimumRate string
+	Rate string
+	Volume float64
+	Position int64
+	LoopStatus string
+	Playback string
+	Metadata struct {
+		TrackID string
+		Artist []string
+		Title string
+		Album string
+		TrackNumber int32
+		Rating int
+		Status string
+		Url string
+		ArtUrl string
+		ArtFile string
+	}
+}

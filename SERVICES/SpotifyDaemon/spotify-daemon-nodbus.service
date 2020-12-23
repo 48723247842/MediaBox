@@ -2,6 +2,8 @@
 Description=Keeps Spotify Running
 After=network.target
 
+# https://serverfault.com/questions/892465/starting-systemd-services-sharing-a-session-d-bus-on-headless-system
+
 [Service]
 Restart=always
 RestartSec=3
