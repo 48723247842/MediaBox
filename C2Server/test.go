@@ -8,7 +8,7 @@ import (
 )
 
 
-func main() {
+func Test() {
 	logger := utils.BuildLogger( "C2Server" )
 	logger.Info( "main()" )
 

@@ -37,6 +37,21 @@ func Button1( context *fiber.Ctx ) ( error ) {
 	}).Catch( func ( e try.E ) {
 		fmt.Println( e )
 	})
+	button_1_result := struct {
+		Status types.SpotifyStatus
+		Teardown string
+		TVPrep string
+		Result string
+	} {
+		Status: status ,
+		Teardown: teardown_result ,
+		TVPrep: tv_preparation_result ,
+		Result: result ,
+	}
+	logger.WithFields( logrus.Fields {
+		"command": "button_1_result" ,
+		"button_1_result": button_1_result ,
+	}).Info( "State === Button 1 === Status")
 	return context.JSON( fiber.Map{
 		"route": "/states/spotify/start" ,
 		"previous_state_teardown_result": teardown_result ,

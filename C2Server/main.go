@@ -20,6 +20,11 @@ func main() {
 	// app.Get( "/previous" )
 	// app.Get( "/restart" )
 
+	// Reset Routes
+	// reset := app.Group( "/reset" )
+	// reset.Get( "/" , reset_everything )
+	// reset.Get( "/tv" )
+
 	// Named Top Level Macro States
 	app.Get( "/spotify" , buttons_route_handler.Button1 )
 	//app.Get( "/relaxing" , buttons_route_handler.Button1 )
