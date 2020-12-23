@@ -7,7 +7,8 @@ require (
 	github.com/0187773933/SpotifyDBUSController v0.0.0-20201218010215-9e6089a042a1
 	github.com/0187773933/VLCTelnetWrapper v0.0.0-20201223010120-7a2bb170bd93
 	github.com/0187773933/VLCWrapper v0.0.0-20201221220025-0eb764d89766
-	github.com/gin-gonic/gin v1.6.3 // indirect
+	github.com/0187773933/VizioController v0.0.0-20201223071950-7f415a1d80a5
+	github.com/gobs/pretty v0.0.0-20180724170744-09732c25a95b
 	github.com/gofiber/fiber/v2 v2.3.0
 	github.com/manucorporat/try v0.0.0-20170609134256-2a0c6b941d52
 	github.com/sirupsen/logrus v1.7.0

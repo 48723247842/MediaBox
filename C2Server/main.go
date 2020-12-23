@@ -2,6 +2,7 @@ package main
 
 import (
 	fiber "github.com/gofiber/fiber/v2"
+	buttons_route_handler "c2server/routes/buttons"
 	state_spotify_route_handler "c2server/routes/states/spotify"
 	state_local_tvshow_route_handler "c2server/routes/states/local/tvshow"
 )
@@ -9,6 +10,13 @@ import (
 func main() {
 
 	app := fiber.New()
+
+	app.Get( "/spotify" , buttons_route_handler.Button1 )
+
+	// Button Routes
+	buttons := app.Group( "/button" )
+	buttons.Get( "/1" , buttons_route_handler.Button1 )
+	buttons.Get( "/spotify" , buttons_route_handler.Button1 )
 
 	// States Routes
 	states := app.Group( "/states" )

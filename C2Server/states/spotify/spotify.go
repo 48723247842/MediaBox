@@ -157,6 +157,7 @@ func swap_current_and_previous_state_info( state_name string ) {
 
 func Start() ( result types.SpotifyStatus ) {
 	logger.Info( "State === Spotify === Start()" )
+	utils.TeardownCurrentState()
 	swap_current_and_previous_state_info( "SpotifyStartNextInCircularListOfMiscGenrePlaylists" )
 	result = StartNextInCircularListOfMiscGenrePlaylists()
 	return
