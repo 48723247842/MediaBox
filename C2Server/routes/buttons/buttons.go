@@ -2,7 +2,7 @@ package buttonsroutehandler
 
 import (
 	"fmt"
-	"reflect"
+	//"reflect"
 	logrus "github.com/sirupsen/logrus"
 	try "github.com/manucorporat/try"
 	async "github.com/rafaeldias/async"
@@ -22,7 +22,7 @@ func Button1( context *fiber.Ctx ) ( error ) {
 	teardown_result := "failed"
 	tv_preparation_result := "failed"
 	try.This( func() {
-		async_result , async_error := async.Parallel( async.MapTasks{
+		_ , async_error := async.Parallel( async.MapTasks{
 			"teardown": func() {
 				teardown_result = utils.TeardownCurrentState()
 			} ,
@@ -30,10 +30,10 @@ func Button1( context *fiber.Ctx ) ( error ) {
 				tv_preparation_result = utils.PrepareTV()
 			} ,
 		})
-		if async_error != nil { fmt.Println( async_error ) }
-		fmt.Println( reflect.TypeOf( async_result ) )
-		status = spotify.Start()
-		result = "success"
+		if async_error == nil {
+			status = spotify.Start()
+			result = "success"
+		}
 	}).Catch( func ( e try.E ) {
 		fmt.Println( e )
 	})

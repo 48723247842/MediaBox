@@ -11,6 +11,16 @@ func main() {
 
 	app := fiber.New()
 
+	// Top Level Control
+	// app.Get( "/pause" )
+	// app.Get( "/resume" )
+	// app.Get( "/play" )
+	// app.Get( "/stop" )
+	// app.Get( "/next" )
+	// app.Get( "/previous" )
+	// app.Get( "/restart" )
+
+	// Named Top Level Macro States
 	app.Get( "/spotify" , buttons_route_handler.Button1 )
 
 	// Button Routes
@@ -18,7 +28,7 @@ func main() {
 	buttons.Get( "/1" , buttons_route_handler.Button1 )
 	buttons.Get( "/spotify" , buttons_route_handler.Button1 )
 
-	// States Routes
+	// Micro State Routes
 	states := app.Group( "/states" )
 
 	// States Spotify Routes
@@ -45,7 +55,6 @@ func main() {
 	states_local_tvshow.Get( "/previous" , state_local_tvshow_route_handler.Previous )
 	states_local_tvshow.Get( "/status" , state_local_tvshow_route_handler.Status )
 
-
-	 app.Listen( ":9363" )
+	app.Listen( ":9363" )
 
 }

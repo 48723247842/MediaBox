@@ -71,27 +71,50 @@ type VLCCommonStatus struct {
 }
 
 type SpotifyStatus struct {
-	Shuffle string `json:shuffle`
-	MaximumRate string `json:maximum_rate`
-	MinimumRate string `json:minimum_rate`
-	Rate string `json:rate`
-	Volume float64 `json:volume`
-	Position int64 `json:position`
-	LoopStatus string `json:loop_status`
-	Playback string `json:playback`
+	Shuffle string
+	MaximumRate string
+	MinimumRate string
+	Rate string
+	Volume float64
+	Position int64
+	LoopStatus string
+	Playback string
 	Metadata struct {
-		TrackID string `json:track_id`
-		Artist []string `json:artist`
-		Title string `json:title`
-		Album string `json:album`
-		TrackNumber int32 `json:track_number`
-		Rating int `json:rating`
-		Status string `json:status`
-		Url string `json:url`
-		ArtUrl string `json:art_url`
-		ArtFile string `json:art_file`
-	} `json:metadata`
+		TrackID string
+		Artist []string
+		Title string
+		Album string
+		TrackNumber int32
+		Rating int
+		Status string
+		Url string
+		ArtUrl string
+		ArtFile string
+	}
 }
+
+// type SpotifyStatus struct {
+// 	Shuffle string `json:shuffle`
+// 	MaximumRate string `json:maximum_rate`
+// 	MinimumRate string `json:minimum_rate`
+// 	Rate string `json:rate`
+// 	Volume float64 `json:volume`
+// 	Position int64 `json:position`
+// 	LoopStatus string `json:loop_status`
+// 	Playback string `json:playback`
+// 	Metadata struct {
+// 		TrackID string `json:track_id`
+// 		Artist []string `json:artist`
+// 		Title string `json:title`
+// 		Album string `json:album`
+// 		TrackNumber int32 `json:track_number`
+// 		Rating int `json:rating`
+// 		Status string `json:status`
+// 		Url string `json:url`
+// 		ArtUrl string `json:art_url`
+// 		ArtFile string `json:art_file`
+// 	} `json:metadata`
+// }
 
 type TVState struct {
 	Power int `json:power`
