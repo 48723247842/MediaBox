@@ -226,19 +226,6 @@ func Status() ( result types.VLCCommonStatus ) {
 	return
 }
 
-func Start() ( result types.VLCCommonStatus ) {
-	logger.Info( "State === LocalTVShow === Start()" )
-	substates.StartNextShowInCircularListAndNextEpisodeInCircularList()
-	vlc := get_vlc_client()
-	result = get_vlc_common_status( &vlc )
-	vlc.Disconnect()
-	logger.WithFields( logrus.Fields{
-		"command": "local_tv_start_result" ,
-		"local_tv_start_result": result ,
-	}).Info( "State === LocalTVShow === Start()" )
-	return
-}
-
 func Teardown() ( result types.VLCCommonStatus ) {
 	logger.Info( "State === LocalTVShow === Teardown()" )
 	vlc := get_vlc_client()
@@ -251,5 +238,20 @@ func Teardown() ( result types.VLCCommonStatus ) {
 		"command": "local_tv_teardown_result" ,
 		"local_tv_teardown_result": result ,
 	}).Info( "State === LocalTVShow === Teardown()" )
+	return
+}
+
+
+func Start() ( result types.VLCCommonStatus ) {
+	logger.Info( "State === LocalTVShow === Start()" )
+	utils.UpdateCurrentState( "LocalTVShow" , "StartNextShowInCircularListAndNextEpisodeInCircularList" )
+	substates.StartNextShowInCircularListAndNextEpisodeInCircularList()
+	vlc := get_vlc_client()
+	result = get_vlc_common_status( &vlc )
+	vlc.Disconnect()
+	logger.WithFields( logrus.Fields{
+		"command": "local_tv_start_result" ,
+		"local_tv_start_result": result ,
+	}).Info( "State === LocalTVShow === Start()" )
 	return
 }

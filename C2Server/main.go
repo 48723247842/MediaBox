@@ -27,12 +27,15 @@ func main() {
 
 	// Named Top Level Macro States
 	app.Get( "/spotify" , buttons_route_handler.Button1 )
+	app.Get( "/tv" , buttons_route_handler.Button2 )
 	//app.Get( "/relaxing" , buttons_route_handler.Button1 )
 
 	// Button Routes
 	buttons := app.Group( "/button" )
 	buttons.Get( "/1" , buttons_route_handler.Button1 )
-	buttons.Get( "/spotify" , buttons_route_handler.Button1 )
+	buttons.Get( "/spotify" , buttons_route_handler.Button2 )
+	buttons.Get( "/2" , buttons_route_handler.Button2 )
+	buttons.Get( "/tv" , buttons_route_handler.Button1 )
 	buttons.Get( "/6" , buttons_route_handler.Button6 )
 	buttons.Get( "/pause" , buttons_route_handler.Button6 )
 	buttons.Get( "/7" , buttons_route_handler.Button7 )

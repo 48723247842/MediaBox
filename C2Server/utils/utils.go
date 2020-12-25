@@ -188,7 +188,7 @@ func TeardownCurrentState() ( result string ) {
 		case "Spotify":
 			url = fmt.Sprintf( "http://localhost:9363/states/%s/teardown" , type_lowercase )
 		case "LocalTVShow":
-			url = "http://localhost:9363/states/local/tv/teardown"
+			url = "http://localhost:9363/states/local/tvshow/teardown"
 		default:
 			fmt.Println( "Unknown Current State" )
 			fmt.Println( current_state.GenericType )
@@ -219,7 +219,7 @@ func PauseCurrentState() ( result string ) {
 		case "Spotify":
 			url = fmt.Sprintf( "http://localhost:9363/states/%s/pause" , type_lowercase )
 		case "LocalTVShow":
-			url = "http://localhost:9363/states/local/tv/pause"
+			url = "http://localhost:9363/states/local/tvshow/pause"
 		default:
 			fmt.Println( "Unknown Current State" )
 			fmt.Println( current_state.GenericType )
@@ -250,7 +250,7 @@ func PlayCurrentState() ( result string ) {
 		case "Spotify":
 			url = fmt.Sprintf( "http://localhost:9363/states/%s/play" , type_lowercase )
 		case "LocalTVShow":
-			url = "http://localhost:9363/states/local/tv/play"
+			url = "http://localhost:9363/states/local/tvshow/play"
 		default:
 			fmt.Println( "Unknown Current State" )
 			fmt.Println( current_state.GenericType )
@@ -281,7 +281,7 @@ func StopCurrentState() ( result string ) {
 		case "Spotify":
 			url = fmt.Sprintf( "http://localhost:9363/states/%s/stop" , type_lowercase )
 		case "LocalTVShow":
-			url = "http://localhost:9363/states/local/tv/stop"
+			url = "http://localhost:9363/states/local/tvshow/stop"
 		default:
 			fmt.Println( "Unknown Current State" )
 			fmt.Println( current_state.GenericType )
@@ -312,7 +312,7 @@ func NextCurrentState() ( result string ) {
 		case "Spotify":
 			url = fmt.Sprintf( "http://localhost:9363/states/%s/next" , type_lowercase )
 		case "LocalTVShow":
-			url = "http://localhost:9363/states/local/tv/next"
+			url = "http://localhost:9363/states/local/tvshow/next"
 		default:
 			fmt.Println( "Unknown Current State" )
 			fmt.Println( current_state.GenericType )
@@ -343,7 +343,7 @@ func PreviousCurrentState() ( result string ) {
 		case "Spotify":
 			url = fmt.Sprintf( "http://localhost:9363/states/%s/previous" , type_lowercase )
 		case "LocalTVShow":
-			url = "http://localhost:9363/states/local/tv/previous"
+			url = "http://localhost:9363/states/local/tvshow/previous"
 		default:
 			fmt.Println( "Unknown Current State" )
 			fmt.Println( current_state.GenericType )
@@ -414,5 +414,46 @@ func IsSpotifyShuffleOn() ( result bool ) {
 	if shuffle_green_count > 10 {
 		result = true
 	}
+	return
+}
+
+
+func build_state_meta_data( state_name string ) ( json_string string ) {
+	state_data := types.StateMetaData {
+		Name: state_name ,
+		GenericType: "Spotify" ,
+		RestartOnFail: true ,
+		NowPlaying: types.NowPlayingMeta{} ,
+	}
+	json_marshal_result , json_marshal_error := json.Marshal( state_data )
+	if json_marshal_error != nil { panic( json_marshal_error ) }
+	json_string = string( json_marshal_result )
+	return
+}
+
+func swap_current_and_previous_state_info( state_name string ) {
+
+}
+func UpdateCurrentState( state_type string , state_name string ) ( result string ) {
+	result = "failed"
+	redis := redis.Manager{}
+	redis.Connect( "localhost:6379" , 3 , "" )
+
+	// 1.) Set Current State to Previous State
+	state_current := redis.Get( "STATE.CURRENT" )
+	redis.Set( "STATE.PREVIOUS" , state_current )
+
+	// 2.) Build New State Meta Data Object and Store as Current State
+	state_data := types.StateMetaData {
+		Name: state_name ,
+		GenericType: state_type ,
+		RestartOnFail: true ,
+		NowPlaying: types.NowPlayingMeta{} ,
+	}
+	json_marshal_result , json_marshal_error := json.Marshal( state_data )
+	if json_marshal_error != nil { panic( json_marshal_error ) }
+	json_string := string( json_marshal_result )
+	redis.Set( "STATE.CURRENT" , json_string )
+	result = "success"
 	return
 }

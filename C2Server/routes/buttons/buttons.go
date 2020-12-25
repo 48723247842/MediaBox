@@ -10,10 +10,11 @@ import (
 	types "c2server/types"
 	utils "c2server/utils"
 	spotify "c2server/states/spotify"
-	//localtvshow "c2server/states/local_tv_show"
+	localtvshow "c2server/states/local_tv_show"
 )
 
 var logger *logrus.Entry = utils.BuildLogger( "Buttons" )
+
 
 // Spotify Random Currated Playlist
 func Button1( context *fiber.Ctx ) ( error ) {
@@ -60,6 +61,54 @@ func Button1( context *fiber.Ctx ) ( error ) {
 		"status": status ,
 	})
 }
+
+
+// Local TV Show
+func Button2( context *fiber.Ctx ) ( error ) {
+	result := "failed"
+	status := types.VLCCommonStatus{}
+	teardown_result := "failed"
+	tv_preparation_result := "failed"
+	try.This( func() {
+		_ , async_error := async.Parallel( async.MapTasks{
+			"teardown": func() {
+				teardown_result = utils.TeardownCurrentState()
+			} ,
+			"tv_prep": func() {
+				tv_preparation_result = utils.PrepareTV()
+			} ,
+		})
+		if async_error == nil {
+			status = localtvshow.Start()
+			result = "success"
+		}
+	}).Catch( func ( e try.E ) {
+		fmt.Println( e )
+	})
+	button_2_result := struct {
+		Status types.VLCCommonStatus
+		Teardown string
+		TVPrep string
+		Result string
+	} {
+		Status: status ,
+		Teardown: teardown_result ,
+		TVPrep: tv_preparation_result ,
+		Result: result ,
+	}
+	logger.WithFields( logrus.Fields {
+		"command": "button_2_result" ,
+		"button_2_result": button_2_result ,
+	}).Info( "State === Button 2 === Status")
+	return context.JSON( fiber.Map{
+		"route": "/button/2" ,
+		"previous_state_teardown_result": teardown_result ,
+		"tv_preparation_result": tv_preparation_result ,
+		"result": result ,
+		"status": status ,
+	})
+}
+
 
 // Generic Pause
 func Button6( context *fiber.Ctx ) ( error ) {

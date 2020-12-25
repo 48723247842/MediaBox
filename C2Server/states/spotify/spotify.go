@@ -2,9 +2,8 @@ package spotify
 
 import (
 	"fmt"
+	//"encoding/json"
 	utils "c2server/utils"
-	"encoding/json"
-	//"reflect"
 	types "c2server/types"
 	redis "github.com/0187773933/RedisManagerUtils/manager"
 	spotify_dbus "github.com/0187773933/SpotifyDBUSController/controller"
@@ -130,40 +129,9 @@ func StartNextInCircularListOfMiscGenrePlaylists() ( result types.SpotifyStatus 
 	return
 }
 
-func build_state_meta_data( state_name string ) ( json_string string ) {
-	state_data := types.StateMetaData {
-		Name: state_name ,
-		GenericType: "Spotify" ,
-		RestartOnFail: true ,
-		NowPlaying: types.NowPlayingMeta{} ,
-	}
-	json_marshal_result , json_marshal_error := json.Marshal( state_data )
-	if json_marshal_error != nil { panic( json_marshal_error ) }
-	json_string = string( json_marshal_result )
-	return
-}
-
-func swap_current_and_previous_state_info( state_name string ) {
-	redis := redis.Manager{}
-	redis.Connect( "localhost:6379" , 3 , "" )
-	state_current := redis.Get( "STATE.CURRENT" )
-	logger.WithFields( logrus.Fields{
-		"command": "state_current" ,
-		"state_current": state_current ,
-	}).Info( "State === Spotify === swap_current_and_previous_state_info() === STATE CURRENT" )
-	redis.Set( "STATE.PREVIOUS" , state_current )
-	state_meta_data := build_state_meta_data( state_name )
-	logger.WithFields( logrus.Fields{
-		"command": "new_state" ,
-		"new_state": state_meta_data ,
-	}).Info( "State === Spotify === swap_current_and_previous_state_info() === NEW STATE" )
-	redis.Set( "STATE.CURRENT" , state_meta_data )
-}
-
 func Start() ( result types.SpotifyStatus ) {
 	logger.Info( "State === Spotify === Start()" )
-	//utils.TeardownCurrentState()
-	swap_current_and_previous_state_info( "SpotifyStartNextInCircularListOfMiscGenrePlaylists" )
+	utils.UpdateCurrentState( "Spotify" , "SpotifyStartNextInCircularListOfMiscGenrePlaylists" )
 	result = StartNextInCircularListOfMiscGenrePlaylists()
 	return
 }
