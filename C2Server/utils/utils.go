@@ -188,7 +188,162 @@ func TeardownCurrentState() ( result string ) {
 		case "Spotify":
 			url = fmt.Sprintf( "http://localhost:9363/states/%s/teardown" , type_lowercase )
 		case "LocalTVShow":
-			url = fmt.Sprintf( "http://localhost:9363/states/%s/teardown" , type_lowercase )
+			url = "http://localhost:9363/states/local/tv/teardown"
+		default:
+			fmt.Println( "Unknown Current State" )
+			fmt.Println( current_state.GenericType )
+	}
+	response , err := http.Get( url )
+	if err != nil { fmt.Println( err ) }
+	defer response.Body.Close()
+	body , err := ioutil.ReadAll( response.Body )
+	if err != nil { fmt.Println( err ) }
+	result = string( body )
+	return
+}
+
+func PauseCurrentState() ( result string ) {
+	result = "failed"
+	redis := redis.Manager{}
+	redis.Connect( "localhost:6379" , 3 , "" )
+	state_current := redis.Get( "STATE.CURRENT" )
+	var current_state types.StateMetaData
+	json_unmarshal_error := json.Unmarshal( []byte( state_current ) , &current_state )
+	if json_unmarshal_error != nil {
+		fmt.Println( json_unmarshal_error )
+	}
+	var url string
+	type_lowercase := strings.ToLower( current_state.GenericType )
+	fmt.Println( type_lowercase )
+	switch current_state.GenericType {
+		case "Spotify":
+			url = fmt.Sprintf( "http://localhost:9363/states/%s/pause" , type_lowercase )
+		case "LocalTVShow":
+			url = "http://localhost:9363/states/local/tv/pause"
+		default:
+			fmt.Println( "Unknown Current State" )
+			fmt.Println( current_state.GenericType )
+	}
+	response , err := http.Get( url )
+	if err != nil { fmt.Println( err ) }
+	defer response.Body.Close()
+	body , err := ioutil.ReadAll( response.Body )
+	if err != nil { fmt.Println( err ) }
+	result = string( body )
+	return
+}
+
+func PlayCurrentState() ( result string ) {
+	result = "failed"
+	redis := redis.Manager{}
+	redis.Connect( "localhost:6379" , 3 , "" )
+	state_current := redis.Get( "STATE.CURRENT" )
+	var current_state types.StateMetaData
+	json_unmarshal_error := json.Unmarshal( []byte( state_current ) , &current_state )
+	if json_unmarshal_error != nil {
+		fmt.Println( json_unmarshal_error )
+	}
+	var url string
+	type_lowercase := strings.ToLower( current_state.GenericType )
+	fmt.Println( type_lowercase )
+	switch current_state.GenericType {
+		case "Spotify":
+			url = fmt.Sprintf( "http://localhost:9363/states/%s/play" , type_lowercase )
+		case "LocalTVShow":
+			url = "http://localhost:9363/states/local/tv/play"
+		default:
+			fmt.Println( "Unknown Current State" )
+			fmt.Println( current_state.GenericType )
+	}
+	response , err := http.Get( url )
+	if err != nil { fmt.Println( err ) }
+	defer response.Body.Close()
+	body , err := ioutil.ReadAll( response.Body )
+	if err != nil { fmt.Println( err ) }
+	result = string( body )
+	return
+}
+
+func StopCurrentState() ( result string ) {
+	result = "failed"
+	redis := redis.Manager{}
+	redis.Connect( "localhost:6379" , 3 , "" )
+	state_current := redis.Get( "STATE.CURRENT" )
+	var current_state types.StateMetaData
+	json_unmarshal_error := json.Unmarshal( []byte( state_current ) , &current_state )
+	if json_unmarshal_error != nil {
+		fmt.Println( json_unmarshal_error )
+	}
+	var url string
+	type_lowercase := strings.ToLower( current_state.GenericType )
+	fmt.Println( type_lowercase )
+	switch current_state.GenericType {
+		case "Spotify":
+			url = fmt.Sprintf( "http://localhost:9363/states/%s/stop" , type_lowercase )
+		case "LocalTVShow":
+			url = "http://localhost:9363/states/local/tv/stop"
+		default:
+			fmt.Println( "Unknown Current State" )
+			fmt.Println( current_state.GenericType )
+	}
+	response , err := http.Get( url )
+	if err != nil { fmt.Println( err ) }
+	defer response.Body.Close()
+	body , err := ioutil.ReadAll( response.Body )
+	if err != nil { fmt.Println( err ) }
+	result = string( body )
+	return
+}
+
+func NextCurrentState() ( result string ) {
+	result = "failed"
+	redis := redis.Manager{}
+	redis.Connect( "localhost:6379" , 3 , "" )
+	state_current := redis.Get( "STATE.CURRENT" )
+	var current_state types.StateMetaData
+	json_unmarshal_error := json.Unmarshal( []byte( state_current ) , &current_state )
+	if json_unmarshal_error != nil {
+		fmt.Println( json_unmarshal_error )
+	}
+	var url string
+	type_lowercase := strings.ToLower( current_state.GenericType )
+	fmt.Println( type_lowercase )
+	switch current_state.GenericType {
+		case "Spotify":
+			url = fmt.Sprintf( "http://localhost:9363/states/%s/next" , type_lowercase )
+		case "LocalTVShow":
+			url = "http://localhost:9363/states/local/tv/next"
+		default:
+			fmt.Println( "Unknown Current State" )
+			fmt.Println( current_state.GenericType )
+	}
+	response , err := http.Get( url )
+	if err != nil { fmt.Println( err ) }
+	defer response.Body.Close()
+	body , err := ioutil.ReadAll( response.Body )
+	if err != nil { fmt.Println( err ) }
+	result = string( body )
+	return
+}
+
+func PreviousCurrentState() ( result string ) {
+	result = "failed"
+	redis := redis.Manager{}
+	redis.Connect( "localhost:6379" , 3 , "" )
+	state_current := redis.Get( "STATE.CURRENT" )
+	var current_state types.StateMetaData
+	json_unmarshal_error := json.Unmarshal( []byte( state_current ) , &current_state )
+	if json_unmarshal_error != nil {
+		fmt.Println( json_unmarshal_error )
+	}
+	var url string
+	type_lowercase := strings.ToLower( current_state.GenericType )
+	fmt.Println( type_lowercase )
+	switch current_state.GenericType {
+		case "Spotify":
+			url = fmt.Sprintf( "http://localhost:9363/states/%s/previous" , type_lowercase )
+		case "LocalTVShow":
+			url = "http://localhost:9363/states/local/tv/previous"
 		default:
 			fmt.Println( "Unknown Current State" )
 			fmt.Println( current_state.GenericType )

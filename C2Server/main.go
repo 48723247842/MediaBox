@@ -12,13 +12,13 @@ func main() {
 	app := fiber.New()
 
 	// Top Level Control
-	// app.Get( "/pause" )
-	// app.Get( "/resume" )
-	// app.Get( "/play" )
-	// app.Get( "/stop" )
-	// app.Get( "/next" )
-	// app.Get( "/previous" )
-	// app.Get( "/restart" )
+	app.Get( "/pause" , buttons_route_handler.Button6 )
+	app.Get( "/resume" , buttons_route_handler.Button6 )
+	app.Get( "/play" , buttons_route_handler.ButtonPlay )
+	app.Get( "/stop" , buttons_route_handler.Button8 )
+	app.Get( "/next" , buttons_route_handler.Button9 )
+	app.Get( "/previous" , buttons_route_handler.Button7 )
+	//app.Get( "/restart" )
 
 	// Reset Routes
 	// reset := app.Group( "/reset" )
@@ -33,6 +33,14 @@ func main() {
 	buttons := app.Group( "/button" )
 	buttons.Get( "/1" , buttons_route_handler.Button1 )
 	buttons.Get( "/spotify" , buttons_route_handler.Button1 )
+	buttons.Get( "/6" , buttons_route_handler.Button6 )
+	buttons.Get( "/pause" , buttons_route_handler.Button6 )
+	buttons.Get( "/7" , buttons_route_handler.Button7 )
+	buttons.Get( "/previous" , buttons_route_handler.Button7 )
+	buttons.Get( "/8" , buttons_route_handler.Button8 )
+	buttons.Get( "/stop" , buttons_route_handler.Button8 )
+	buttons.Get( "/9" , buttons_route_handler.Button9 )
+	buttons.Get( "/next" , buttons_route_handler.Button9 )
 
 	// Micro State Routes
 	states := app.Group( "/states" )

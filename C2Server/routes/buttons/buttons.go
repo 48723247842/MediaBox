@@ -53,10 +53,125 @@ func Button1( context *fiber.Ctx ) ( error ) {
 		"button_1_result": button_1_result ,
 	}).Info( "State === Button 1 === Status")
 	return context.JSON( fiber.Map{
-		"route": "/states/spotify/start" ,
+		"route": "/button/1" ,
 		"previous_state_teardown_result": teardown_result ,
 		"tv_preparation_result": tv_preparation_result ,
 		"result": result ,
 		"status": status ,
+	})
+}
+
+// Generic Pause
+func Button6( context *fiber.Ctx ) ( error ) {
+	result := "failed"
+	try.This( func() {
+		result = utils.PauseCurrentState()
+	}).Catch( func ( e try.E ) {
+		fmt.Println( e )
+	})
+	button_6_result := struct {
+		Result string
+	} {
+		Result: result ,
+	}
+	logger.WithFields( logrus.Fields {
+		"command": "button_6_result" ,
+		"button_6_result": button_6_result ,
+	}).Info( "State === Button 6 === Result")
+	return context.JSON( fiber.Map{
+		"route": "/states/button/6" ,
+		"result": result ,
+	})
+}
+
+// Generic Previous
+func Button7( context *fiber.Ctx ) ( error ) {
+	result := "failed"
+	try.This( func() {
+		result = utils.PreviousCurrentState()
+	}).Catch( func ( e try.E ) {
+		fmt.Println( e )
+	})
+	button_7_result := struct {
+		Result string
+	} {
+		Result: result ,
+	}
+	logger.WithFields( logrus.Fields {
+		"command": "button_7_result" ,
+		"button_7_result": button_7_result ,
+	}).Info( "State === Button 7 === Result")
+	return context.JSON( fiber.Map{
+		"route": "/states/button/7" ,
+		"result": result ,
+	})
+}
+
+// Generic Stop
+func Button8( context *fiber.Ctx ) ( error ) {
+	result := "failed"
+	try.This( func() {
+		result = utils.StopCurrentState()
+	}).Catch( func ( e try.E ) {
+		fmt.Println( e )
+	})
+	button_8_result := struct {
+		Result string
+	} {
+		Result: result ,
+	}
+	logger.WithFields( logrus.Fields {
+		"command": "button_8_result" ,
+		"button_8_result": button_8_result ,
+	}).Info( "State === Button 8 === Result")
+	return context.JSON( fiber.Map{
+		"route": "/states/button/8" ,
+		"result": result ,
+	})
+}
+
+// Generic Next
+func Button9( context *fiber.Ctx ) ( error ) {
+	result := "failed"
+	try.This( func() {
+		result = utils.NextCurrentState()
+	}).Catch( func ( e try.E ) {
+		fmt.Println( e )
+	})
+	button_9_result := struct {
+		Result string
+	} {
+		Result: result ,
+	}
+	logger.WithFields( logrus.Fields {
+		"command": "button_9_result" ,
+		"button_9_result": button_9_result ,
+	}).Info( "State === Button 9 === Result")
+	return context.JSON( fiber.Map{
+		"route": "/states/button/9" ,
+		"result": result ,
+	})
+}
+
+
+func ButtonPlay( context *fiber.Ctx ) ( error ) {
+	result := "failed"
+	try.This( func() {
+		result = utils.PlayCurrentState()
+	}).Catch( func ( e try.E ) {
+		fmt.Println( e )
+	})
+	button_play_result := struct {
+		Result string
+	} {
+		Result: result ,
+	}
+	logger.WithFields( logrus.Fields {
+		"command": "button_play_result" ,
+		"button_play_result": button_play_result ,
+	}).Info( "State === Play === Result")
+	return context.JSON( fiber.Map{
+		"route": "/play" ,
+		"result": result ,
 	})
 }

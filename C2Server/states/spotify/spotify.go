@@ -70,7 +70,12 @@ func Pause() ( result types.SpotifyStatus ) {
 	logger.Info( "State === Spotify === Pause()" )
 	spotify := spotify_dbus.Controller{}
 	spotify.Connect()
-	spotify.Pause()
+	spotify.UpdateStatus()
+	if spotify.Status.Playback == "Paused" {
+		spotify.Play()
+	} else {
+		spotify.Pause()
+	}
 	logger.WithFields( logrus.Fields{
 		"command": "spotify_status" ,
 		"spotify_status": spotify.Status ,
@@ -157,7 +162,7 @@ func swap_current_and_previous_state_info( state_name string ) {
 
 func Start() ( result types.SpotifyStatus ) {
 	logger.Info( "State === Spotify === Start()" )
-	utils.TeardownCurrentState()
+	//utils.TeardownCurrentState()
 	swap_current_and_previous_state_info( "SpotifyStartNextInCircularListOfMiscGenrePlaylists" )
 	result = StartNextInCircularListOfMiscGenrePlaylists()
 	return
