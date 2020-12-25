@@ -1,0 +1,14 @@
+[Unit]
+Description=Continuously Polls For USB Button Presses
+After=network.target
+
+[Timer]
+OnBootSec=10
+OnUnitActiveSec=10
+AccuracySec=1ms
+
+[Service]
+ExecStart=/bin/bash -l -c 'su morphs -c "/usr/local/bin/mediaboxUSBButtonPoller"'
+
+[Install]
+WantedBy=multi-user.target
