@@ -13,8 +13,8 @@
 RMUHash=$(curl -s 'https://api.github.com/repos/0187773933/RedisManagerUtils/git/refs/heads/master' | jq -r '.object.sha')
 go get "github.com/0187773933/RedisManagerUtils/@$RMUHash"
 
-VLCHash=$(curl -s 'https://api.github.com/repos/0187773933/VLCWrapper/git/refs/heads/master' | jq -r '.object.sha')
-go get "github.com/0187773933/VLCWrapper/@$VLCHash"
+VLCHash=$(curl -s 'https://api.github.com/repos/0187773933/VLCTelnetWrapper/git/refs/heads/master' | jq -r '.object.sha')
+go get "github.com/0187773933/VLCTelnetWrapper/@$VLCHash"
 
 VizioHash=$(curl -s 'https://api.github.com/repos/0187773933/VizioController/git/refs/heads/master' | jq -r '.object.sha')
 # go get "github.com/0187773933/VLCWrapper/@$VizioHash"

@@ -136,10 +136,11 @@ func Stop() ( result types.VLCCommonStatus ) {
 	vlc := get_vlc_client()
 	vlc.Stop()
 	result = get_vlc_common_status( &vlc )
-	// logger.WithFields( logrus.Fields{
-	// 	"command": "spotify_status" ,
-	// 	"vlc_status": spotify.Status ,
-	// }).Info( "State === LocalTVShow === VLC Status" )
+	vlc.Disconnect()
+	logger.WithFields( logrus.Fields{
+		"command": "local_tv_show_stop_result" ,
+		"local_tv_show_stop_result": result ,
+	}).Info( "State === LocalTVShow === Stop()" )
 	return
 }
 
@@ -148,10 +149,24 @@ func Play() ( result types.VLCCommonStatus ) {
 	vlc := get_vlc_client()
 	vlc.Play()
 	result = get_vlc_common_status( &vlc )
-	// logger.WithFields( logrus.Fields{
-	// 	"command": "spotify_status" ,
-	// 	"spotify_status": spotify.Status ,
-	// }).Info( "State === LocalTVShow === VLC Status" )
+	vlc.Disconnect()
+	logger.WithFields( logrus.Fields{
+		"command": "local_tv_show_play_result" ,
+		"local_tv_show_play_result": result ,
+	}).Info( "State === LocalTVShow === Play()" )
+	return
+}
+
+func Resume() ( result types.VLCCommonStatus ) {
+	logger.Info( "State === LocalTVShow === Resume()" )
+	vlc := get_vlc_client()
+	vlc.Play()
+	result = get_vlc_common_status( &vlc )
+	vlc.Disconnect()
+	logger.WithFields( logrus.Fields{
+		"command": "local_tv_show_resume_result" ,
+		"local_tv_show_resume_result": result ,
+	}).Info( "State === LocalTVShow === Resume()" )
 	return
 }
 
@@ -160,34 +175,41 @@ func Pause() ( result types.VLCCommonStatus ) {
 	vlc := get_vlc_client()
 	vlc.Pause()
 	result = get_vlc_common_status( &vlc )
-	// logger.WithFields( logrus.Fields{
-	// 	"command": "spotify_status" ,
-	// 	"spotify_status": spotify.Status ,
-	// }).Info( "State === LocalTVShow === VLC Status" )
+	vlc.Disconnect()
+	logger.WithFields( logrus.Fields{
+		"command": "local_tv_show_pause_result" ,
+		"local_tv_show_pause_result": result ,
+	}).Info( "State === LocalTVShow === Pause()" )
 	return
 }
 
 func Previous() ( result types.VLCCommonStatus ) {
 	logger.Info( "State === LocalTVShow === Previous()" )
 	vlc := get_vlc_client()
-	vlc.Previous()
+	vlc.FullscreenOff()
+	vlc.Stop()
+	substates.StartPreviousShowInCircularListAndNextEpisodeInCircularListAndIgnoreUnfinishedCurrentEpisode()
 	result = get_vlc_common_status( &vlc )
-	// logger.WithFields( logrus.Fields{
-	// 	"command": "spotify_status" ,
-	// 	"spotify_status": spotify.Status ,
-	// }).Info( "State === LocalTVShow === VLC Status" )
+	vlc.Disconnect()
+	logger.WithFields( logrus.Fields{
+		"command": "local_tv_show_previous_result" ,
+		"local_tv_show_previous_result": result ,
+	}).Info( "State === LocalTVShow === Previous()" )
 	return
 }
 
 func Next() ( result types.VLCCommonStatus ) {
 	logger.Info( "State === LocalTVShow === Next()" )
 	vlc := get_vlc_client()
-	vlc.Next()
+	vlc.FullscreenOff()
+	vlc.Stop()
+	substates.StartNextShowInCircularListAndNextEpisodeInCircularListAndIgnoreUnfinishedCurrentEpisode()
 	result = get_vlc_common_status( &vlc )
-	// logger.WithFields( logrus.Fields{
-	// 	"command": "spotify_status" ,
-	// 	"spotify_status": spotify.Status ,
-	// }).Info( "State === LocalTVShow === VLC Status" )
+	vlc.Disconnect()
+	logger.WithFields( logrus.Fields{
+		"command": "local_tv_show_next_result" ,
+		"local_tv_show_next_result": result ,
+	}).Info( "State === LocalTVShow === Next()" )
 	return
 }
 
@@ -196,28 +218,38 @@ func Status() ( result types.VLCCommonStatus ) {
 	vlc := get_vlc_client()
 	fmt.Println( vlc.Add( "/media/morphs/14TB/MEDIA_MANAGER/TVShows/DrakeAndJosh/001 - Drake and Josh - S01E01 - Pilot.mp4" ) )
 	result = get_vlc_common_status( &vlc )
+	vlc.Disconnect()
 	logger.WithFields( logrus.Fields{
 		"command": "local_tv_show_status" ,
 		"local_tv_show_status": result ,
-	}).Info( "State === LocalTVShow === Status" )
+	}).Info( "State === LocalTVShow === Status()" )
 	return
 }
 
-func Start() ( result string ) {
+func Start() ( result types.VLCCommonStatus ) {
 	logger.Info( "State === LocalTVShow === Start()" )
 	substates.StartNextShowInCircularListAndNextEpisodeInCircularList()
+	vlc := get_vlc_client()
+	result = get_vlc_common_status( &vlc )
+	vlc.Disconnect()
+	logger.WithFields( logrus.Fields{
+		"command": "local_tv_start_result" ,
+		"local_tv_start_result": result ,
+	}).Info( "State === LocalTVShow === Start()" )
 	return
 }
 
 func Teardown() ( result types.VLCCommonStatus ) {
 	logger.Info( "State === LocalTVShow === Teardown()" )
 	vlc := get_vlc_client()
+	vlc.FullscreenOff()
 	vlc.Stop()
 	result = get_vlc_common_status( &vlc )
+	vlc.Disconnect()
 	// Could Run exec( "sudo pkill -9 vlc" ) and then let systemd restart
-	// logger.WithFields( logrus.Fields{
-	// 	"command": "spotify_status" ,
-	// 	"spotify_status": spotify.Status ,
-	// }).Info( "State === LocalTVShow === VLC Status" )
+	logger.WithFields( logrus.Fields{
+		"command": "local_tv_teardown_result" ,
+		"local_tv_teardown_result": result ,
+	}).Info( "State === LocalTVShow === Teardown()" )
 	return
 }

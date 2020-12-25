@@ -4,52 +4,21 @@ import (
 	"fmt"
 	utils "c2server/utils"
 	"encoding/json"
-	"strings"
-	"context"
-	"os"
 	"time"
 	types "c2server/types"
 	logrus "github.com/sirupsen/logrus"
 	redis "github.com/0187773933/RedisManagerUtils/manager"
-	ffprobe "gopkg.in/vansante/go-ffprobe.v2"
-	vlc "github.com/0187773933/VLCWrapper/wrapper"
+	vlc_wrapper "github.com/0187773933/VLCTelnetWrapper/vlc"
 )
 
 var logger *logrus.Entry = utils.BuildLogger( "LocalTVShow" )
 
-func get_title_from_episode_path( episode_path string ) ( title string ){
-	parts := strings.Split( episode_path , "/" )
-	name := parts[len(parts)-1]
-	name_parts := strings.Split( name , ".mp4" )
-	title = name_parts[0]
-	return
-}
-func ffprobe_local_file_for_duration_seconds( episode_path string ) ( duration_seconds int64 ) {
-	// https://pkg.go.dev/gopkg.in/vansante/go-ffprobe.v2#Format
-	duration_seconds = 0
-	ctx , cancelFn := context.WithTimeout( context.Background() , 30*time.Second )
-	defer cancelFn()
-	fileReader , err := os.Open( episode_path )
-	if err != nil {
-		logger.Info( "Couldn't Find Video Information via FFProbe" )
-		return
-	}
-	data , err := ffprobe.ProbeReader( ctx , fileReader )
-	if err != nil {
-		logger.Info( "Couldn't Find Video Information via FFProbe" )
-		return
-	}
-	duration_seconds = int64( data.Format.DurationSeconds )
-	return
-}
 
 func build_default_episode_meta( current_tv_show_name_b64 string , current_tv_show_name string , current_tv_show_index string ,
 	current_episode_name_b64 string , current_episode_name string , current_tv_show_episode_index string ) ( current_episode_meta_struct types.NowPlayingMeta ) {
-
-		episode_duration_seconds := ffprobe_local_file_for_duration_seconds( current_episode_name )
-
+		episode_duration_seconds := utils.FFProbeLocalFileForDurationSeconds( current_episode_name )
 		current_episode_meta_struct = types.NowPlayingMeta {
-		Title: get_title_from_episode_path( current_episode_name ) ,
+		Title: utils.GetTitleFromEpisodePath( current_episode_name ) ,
 		Artist: current_tv_show_name ,
 		LocalFilePath: current_episode_name ,
 		LocalFilePathB64: current_episode_name_b64 ,
@@ -136,22 +105,22 @@ func build_state_meta_data_json( state_name string ) ( json_string string ) {
 	return
 }
 
-func swap_current_and_previous_state_info( state_name string ) {
-	redis := redis.Manager{}
-	redis.Connect( "localhost:6379" , 3 , "" )
-	state_current := redis.Get( "STATE.CURRENT" )
-	logger.WithFields( logrus.Fields{
-		"command": "state_current" ,
-		"state_current": state_current ,
-	}).Info( "State === LocalTVShow === STATE CURRENT" )
-	redis.Set( "STATE.PREVIOUS" , state_current )
-}
+// func swap_current_and_previous_state_info( state_name string ) {
+// 	redis := redis.Manager{}
+// 	redis.Connect( "localhost:6379" , 3 , "" )
+// 	state_current := redis.Get( "STATE.CURRENT" )
+// 	logger.WithFields( logrus.Fields{
+// 		"command": "state_current" ,
+// 		"state_current": state_current ,
+// 	}).Info( "State === LocalTVShow === STATE CURRENT" )
+// 	redis.Set( "STATE.PREVIOUS" , state_current )
+// }
 
 
 
 func StartNextShowInCircularListAndNextEpisodeInCircularList() ( result string ) {
 	logger.Info( "State === LocalTVShow === StartNextShowInCircularListAndNextEpisodeInCircularList()" )
-	swap_current_and_previous_state_info( "LocalTVShowNextShowInCircularListAndNextEpisodeInCircularList" )
+	// swap_current_and_previous_state_info( "LocalTVShowNextShowInCircularListAndNextEpisodeInCircularList" )
 	result = "failed"
 	redis := redis.Manager{}
 	redis.Connect( "localhost:6379" , 3 , "" )
@@ -168,27 +137,88 @@ func StartNextShowInCircularListAndNextEpisodeInCircularList() ( result string )
 		// We Need To Seek Into current_episode.CurrentPosition.Seconds
 	}
 
+	// state_meta_data := build_state_meta_data( "LocalTVShowNextShowInCircularListAndNextEpisodeInCircularList" )
+	// state_meta_data.NowPlaying = current_episode
+	// logger.WithFields( logrus.Fields{
+	// 	"command": "new_state" ,
+	// 	"new_state": state_meta_data ,
+	// }).Info( "State === LocalTVShow === NEW STATE" )
+	// json_marshal_result , json_marshal_error := json.Marshal( state_meta_data )
+	// if json_marshal_error != nil { panic( json_marshal_error ) }
+	// json_string := string( json_marshal_result )
+	// redis.Set( "STATE.CURRENT" , json_string )
+
+	vlc := vlc_wrapper.Wrapper{}
+	vlc.Connect( "127.0.0.1:4212" )
+	vlc.Stop()
+	vlc.Add( current_episode.LocalFilePath )
+	time.Sleep( 3 * time.Second )
+	vlc.FullscreenOn()
+	vlc.Disconnect()
+	result = "success"
 	logger.WithFields( logrus.Fields{
 		"command": "local_tv_show_current_episode" ,
 		"local_tv_show_current_episode": current_episode ,
 	}).Info( "State === LocalTVShow === Current Episode" )
+	return
+}
 
-	state_meta_data := build_state_meta_data( "LocalTVShowNextShowInCircularListAndNextEpisodeInCircularList" )
-	state_meta_data.NowPlaying = current_episode
-	logger.WithFields( logrus.Fields{
-		"command": "new_state" ,
-		"new_state": state_meta_data ,
-	}).Info( "State === LocalTVShow === NEW STATE" )
-	json_marshal_result , json_marshal_error := json.Marshal( state_meta_data )
-	if json_marshal_error != nil { panic( json_marshal_error ) }
-	json_string := string( json_marshal_result )
-	redis.Set( "STATE.CURRENT" , json_string )
+func StartNextShowInCircularListAndNextEpisodeInCircularListAndIgnoreUnfinishedCurrentEpisode() ( result string ) {
+	logger.Info( "State === LocalTVShow === StartNextShowInCircularListAndNextEpisodeInCircularList()" )
+	// swap_current_and_previous_state_info( "LocalTVShowNextShowInCircularListAndNextEpisodeInCircularList" )
+	result = "failed"
+	redis := redis.Manager{}
+	redis.Connect( "localhost:6379" , 3 , "" )
 
-	p := vlc.NewPlayer( nil )
-	p.Start()
-	p.Play( current_episode.LocalFilePath )
+	redis.CircleNext( "MEDIA_MANAGER.TVShows.LIST" )
+	current_episode := get_current_episode( &redis )
+
+	// 2.) Check If Current Episode's CurrentPosition is > 0
+	if current_episode.Times.CurrentPosition.Seconds > 0 {
+		// We Need To Seek Into current_episode.CurrentPosition.Seconds
+	}
+
+	vlc := vlc_wrapper.Wrapper{}
+	vlc.Connect( "127.0.0.1:4212" )
+	vlc.Stop()
+	vlc.Add( current_episode.LocalFilePath )
 	time.Sleep( 3 * time.Second )
-	p.Fullscreen()
+	vlc.FullscreenOn()
+	vlc.Disconnect()
+	result = "success"
+	logger.WithFields( logrus.Fields{
+		"command": "local_tv_show_current_episode" ,
+		"local_tv_show_current_episode": current_episode ,
+	}).Info( "State === LocalTVShow === Current Episode" )
+	return
+}
 
+func StartPreviousShowInCircularListAndNextEpisodeInCircularListAndIgnoreUnfinishedCurrentEpisode() ( result string ) {
+	logger.Info( "State === LocalTVShow === StartNextShowInCircularListAndNextEpisodeInCircularList()" )
+	// swap_current_and_previous_state_info( "LocalTVShowNextShowInCircularListAndNextEpisodeInCircularList" )
+	result = "failed"
+	redis := redis.Manager{}
+	redis.Connect( "localhost:6379" , 3 , "" )
+
+	redis.CirclePrevious( "MEDIA_MANAGER.TVShows.LIST" )
+	current_episode := get_current_episode( &redis )
+
+	// 2.) Check If Current Episode's CurrentPosition is > 0
+	if current_episode.Times.CurrentPosition.Seconds > 0 {
+		// We Need To Seek Into current_episode.CurrentPosition.Seconds
+	}
+
+	vlc := vlc_wrapper.Wrapper{}
+	vlc.Connect( "127.0.0.1:4212" )
+	vlc.Stop()
+	vlc.Add( current_episode.LocalFilePath )
+	time.Sleep( 3 * time.Second )
+	vlc.FullscreenOn()
+	vlc.Disconnect()
+	result = "success"
+	logger.WithFields( logrus.Fields{
+		"command": "local_tv_show_current_episode" ,
+		"local_tv_show_current_episode": current_episode ,
+	}).Info( "State === LocalTVShow === Current Episode" )
 	return
 }

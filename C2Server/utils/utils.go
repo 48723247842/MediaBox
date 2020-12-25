@@ -8,12 +8,18 @@ import (
 	"encoding/json"
 	"encoding/base64"
 	//"io"
+	"os"
+	"context"
+	"time"
 	"io/ioutil"
 	"net/http"
 	log "github.com/sirupsen/logrus"
 	types "c2server/types"
 	redis "github.com/0187773933/RedisManagerUtils/manager"
 	viziocontroller "github.com/0187773933/VizioController/controller"
+	ffprobe "gopkg.in/vansante/go-ffprobe.v2"
+	xdotool "github.com/0187773933/XDoToolWrapper/v1"
+	screenshot "github.com/kbinani/screenshot"
 )
 
 func AddLogToRedis( input_struct *types.LoggerMain ) {
@@ -193,5 +199,65 @@ func TeardownCurrentState() ( result string ) {
 	body , err := ioutil.ReadAll( response.Body )
 	if err != nil { fmt.Println( err ) }
 	result = string( body )
+	return
+}
+
+func GetTitleFromEpisodePath( episode_path string ) ( title string ){
+	parts := strings.Split( episode_path , "/" )
+	name := parts[len(parts)-1]
+	name_parts := strings.Split( name , ".mp4" )
+	title = name_parts[0]
+	return
+}
+
+func FFProbeLocalFileForDurationSeconds( episode_path string ) ( duration_seconds int64 ) {
+	// https://pkg.go.dev/gopkg.in/vansante/go-ffprobe.v2#Format
+	duration_seconds = 0
+	ctx , cancelFn := context.WithTimeout( context.Background() , 60*time.Second )
+	defer cancelFn()
+	fileReader , err := os.Open( episode_path )
+	if err != nil {
+		fmt.Println( "Couldn't Find Video Information via FFProbe" )
+		return
+	}
+	data , err := ffprobe.ProbeReader( ctx , fileReader )
+	if err != nil {
+		fmt.Println( "Couldn't Find Video Information via FFProbe" )
+		return
+	}
+	duration_seconds = int64( data.Format.DurationSeconds )
+	return
+}
+
+func IsSpotifyShuffleOn() ( result bool ) {
+	xdo := xdotool.Wrapper{}
+	xdo.Window.Name = "Spotify"
+	xdo.GetMonitors()
+	xdo.AttachClass( 3 , 500 )
+	xdo.SetWindowSize( 1280 , 733 )
+	xdo.MoveWindow( 300 , 212 )
+	// xdotool_set_windowsize( "48234497" , 1280 , 733 )
+	// xdotool_move_window( "48234497" , 300 , 212 )
+	result = false
+	// xdotool windowsize 48234497 1280 733 && xdotool windowmove 48234497 300 212
+	// https://github.com/BurntSushi/xgb/blob/5f9e7b3c49cdbee70f16f2e417cb8b473e20bc78/xproto/xproto.go#L9260
+	img , err := screenshot.Capture( 837 , 909 , 8 , 7 )
+	if err != nil { return }
+	shuffle_green_count := 0
+	for i := 0; i < len( img.Pix ); i++ {
+		if img.Pix[i] == 29 { shuffle_green_count += 1 }
+		if img.Pix[i] == 30 { shuffle_green_count += 1 }
+		if img.Pix[i] == 31 { shuffle_green_count += 1 }
+		if img.Pix[i] == 76 { shuffle_green_count += 1 }
+		if img.Pix[i] == 78 { shuffle_green_count += 1 }
+		if img.Pix[i] == 84 { shuffle_green_count += 1 }
+		if img.Pix[i] == 158 { shuffle_green_count += 1 }
+		if img.Pix[i] == 166 { shuffle_green_count += 1 }
+		if img.Pix[i] == 167 { shuffle_green_count += 1 }
+		if img.Pix[i] == 185 { shuffle_green_count += 1 }
+	}
+	if shuffle_green_count > 10 {
+		result = true
+	}
 	return
 }
